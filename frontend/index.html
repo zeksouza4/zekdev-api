@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ZEKDEV • Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .glass-card {
+            width: 360px;
+            padding: 30px 28px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.85;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-login {
+            background: #00c6ff;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: #fff;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+        }
+
+        .btn-cadastro {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-cadastro:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .msg {
+            margin-top: 14px;
+            font-size: 13px;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 11px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="glass-card">
+   <div class="logo">
+    <img src="logo-zd.png" alt="ZEKDEV" style="width:64px; margin-bottom:8px;">
+    <div>Acesso ao Sistema</div>
+</div>
+
+    <label>Email</label>
+    <input type="email" id="email" placeholder="seu@email.com">
+
+    <label>Senha</label>
+    <input type="password" id="senha" placeholder="••••••••">
+
+    <button class="btn-login" onclick="login()">Entrar</button>
+    <button class="btn-cadastro" onclick="cadastro()">Criar conta</button>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="footer">
+        © 2026 ZEKDEV. Todos os direitos reservados.
+    </div>
+</div>
+
+<script>
+    const API_URL = "http://127.0.0.1:8001";
+
+    async function cadastro() {
+        const email = document.getElementById("email").value;
+        const senha = document.getElementById("senha").value;
+
+        const resposta = await fetch(`${API_URL}/cadastro?email=${email}&senha=${senha}`, {
+            method: "POST"
+        });
+
+        const dados = await resposta.json();
+        document.getElementById("msg").innerText = dados.msg || dados.detail;
+    }
+
+    async function login() {
+        const email = document.getElementById("email").value;
+        const senha = document.getElementById("senha").value;
+
+        const resposta = await fetch(`${API_URL}/login?email=${email}&senha=${senha}`, {
+            method: "POST"
+        });
+
+        const dados = await resposta.json();
+
+        if (dados.access_token) {
+            localStorage.setItem("token", dados.access_token);
+            document.getElementById("msg").innerText = "Acesso autorizado";
+        } else {
+            document.getElementById("msg").innerText = dados.detail;
+        }
+    }
+</script>
+
+</body>
+</html>
